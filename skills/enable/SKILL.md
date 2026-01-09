@@ -1,7 +1,6 @@
 ---
 name: enable
-description: Enable Claude Talk TTS
-user_invocable: true
+description: "Enable Claude Talk TTS"
 ---
 
 # Enable Claude Talk

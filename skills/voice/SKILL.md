@@ -1,7 +1,6 @@
 ---
 name: voice
-description: Change Claude Talk voice
-user_invocable: true
+description: "Change Claude Talk voice"
 ---
 
 # Change Claude Talk Voice

@@ -1,7 +1,6 @@
 ---
 name: setup
-description: Set up Claude Talk TTS - download models, choose voice, install hook
-user_invocable: true
+description: "Set up Claude Talk TTS - download models, choose voice, install hook"
 ---
 
 # Claude Talk Setup

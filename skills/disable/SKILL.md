@@ -1,7 +1,6 @@
 ---
 name: disable
-description: Disable Claude Talk TTS
-user_invocable: true
+description: "Disable Claude Talk TTS"
 ---
 
 # Disable Claude Talk
