@@ -1,6 +1,7 @@
 """Setup flow for Claude Talk."""
 
 import json
+import sys
 from pathlib import Path
 
 from claude_talk.config import Config, save_config, DEFAULT_CONFIG_PATH
@@ -10,8 +11,11 @@ from claude_talk.tts import setup_models, BarkTTS
 
 CLAUDE_SETTINGS_PATH = Path.home() / ".claude" / "settings.json"
 
+# Plugin root is parent of src/claude_talk/
+PLUGIN_ROOT = Path(__file__).parent.parent.parent
 
-def install_hook(settings_path: Path = CLAUDE_SETTINGS_PATH) -> None:
+
+def install_hook(settings_path: Path = CLAUDE_SETTINGS_PATH, plugin_root: Path = PLUGIN_ROOT) -> None:
     """Install the AssistantResponse hook in Claude settings."""
     settings = {}
     if settings_path.exists():
@@ -20,10 +24,14 @@ def install_hook(settings_path: Path = CLAUDE_SETTINGS_PATH) -> None:
     if "hooks" not in settings:
         settings["hooks"] = {}
 
+    # Use the local run.py script
+    run_script = plugin_root / "run.py"
+    command = f"{sys.executable} {run_script} speak"
+
     settings["hooks"]["AssistantResponse"] = [
         {
             "type": "command",
-            "command": "uvx claude-talk speak"
+            "command": command
         }
     ]
 

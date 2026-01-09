@@ -4,12 +4,10 @@ description: Set up Claude Talk TTS - download models, choose voice, install hoo
 
 # Claude Talk Setup
 
-Run the interactive setup flow for Claude Talk TTS.
-
-Execute this command:
+Run the interactive setup flow for Claude Talk TTS by executing:
 
 ```bash
-uvx claude-talk setup
+uv run --directory /Users/pv/git/claude-talk python run.py setup
 ```
 
 This will:

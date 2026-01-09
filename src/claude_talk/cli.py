@@ -23,11 +23,38 @@ def speak_command(text: str) -> None:
     tts.speak(filtered, voice=config.voice)
 
 
+def voice_command() -> None:
+    """Interactive voice selection."""
+    from claude_talk.config import load_config, save_config
+    from claude_talk.voices import list_voices
+
+    config = load_config()
+    tts = BarkTTS(model_size=config.model_size)
+    voices = list_voices()
+
+    print("Available voices:")
+    for i, (voice_id, info) in enumerate(voices, 1):
+        print(f"\n{i}. {info['name']}")
+        print("   Playing sample...")
+        tts.speak(info["joke"], voice=voice_id)
+
+    while True:
+        choice = input(f"\nEnter choice (1-{len(voices)}): ").strip()
+        if choice.isdigit() and 1 <= int(choice) <= len(voices):
+            break
+        print(f"Please enter a number between 1 and {len(voices)}.")
+
+    selected = voices[int(choice) - 1][0]
+    config.voice = selected
+    save_config(config)
+    print(f"\nVoice changed to {selected}")
+
+
 def main() -> None:
     """CLI entry point."""
     if len(sys.argv) < 2:
         print("Usage: claude-talk <command>", file=sys.stderr)
-        print("Commands: speak, setup", file=sys.stderr)
+        print("Commands: speak, setup, enable, disable, voice", file=sys.stderr)
         sys.exit(1)
 
     command = sys.argv[1]
@@ -50,6 +77,8 @@ def main() -> None:
         config.enabled = False
         save_config(config)
         print("Claude Talk disabled.")
+    elif command == "voice":
+        voice_command()
     else:
         print(f"Unknown command: {command}", file=sys.stderr)
         sys.exit(1)
