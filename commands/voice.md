@@ -1,6 +1,5 @@
 ---
-name: voice
-description: "Change Claude Talk voice"
+description: Change Claude Talk voice
 ---
 
 # Change Claude Talk Voice

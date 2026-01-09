@@ -1,6 +1,5 @@
 ---
-name: setup
-description: "Set up Claude Talk TTS - download models, choose voice, install hook"
+description: Set up Claude Talk TTS - download models, choose voice, install hook
 ---
 
 # Claude Talk Setup

@@ -1,6 +1,5 @@
 ---
-name: enable
-description: "Enable Claude Talk TTS"
+description: Enable Claude Talk TTS
 ---
 
 # Enable Claude Talk

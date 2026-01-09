@@ -1,6 +1,5 @@
 ---
-name: disable
-description: "Disable Claude Talk TTS"
+description: Disable Claude Talk TTS
 ---
 
 # Disable Claude Talk
