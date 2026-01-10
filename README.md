@@ -18,35 +18,18 @@ TTS plugin for Claude Code that speaks Claude's responses aloud using [Kokoro](h
    git clone https://github.com/primary-vector/claude-talk.git
    ```
 
-2. Install dependencies:
-   ```bash
-   cd claude-talk
-   uv sync
-   ```
-
-3. Download the Kokoro models (~340MB):
-   ```bash
-   mkdir -p models
-   curl -L -o models/kokoro-v1.0.onnx https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx
-   curl -L -o models/voices-v1.0.bin https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin
-   ```
-
-4. Run setup in Claude Code:
+2. Run setup in Claude Code:
    ```
    /claude-talk:setup
    ```
 
-   Or manually install the hooks by running:
-   ```bash
-   uv run python -c "
-   import sys
-   sys.path.insert(0, 'src')
-   from claude_talk.setup import install_hook
-   install_hook()
-   "
-   ```
+   This will:
+   - Install Python dependencies
+   - Download the Kokoro TTS models (~340MB)
+   - Let you choose from available voices
+   - Configure the Claude Code hooks
 
-5. Restart Claude Code
+3. Restart Claude Code
 
 ## Commands
 
@@ -92,6 +75,7 @@ The TTS runs in a background subprocess so it doesn't block Claude. New messages
 ## Requirements
 
 - Python 3.11+
+- [uv](https://docs.astral.sh/uv/) package manager
 - macOS (uses ONNX runtime, works great on Apple Silicon)
 - espeak-ng: `brew install espeak-ng`
 

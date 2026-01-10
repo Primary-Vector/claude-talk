@@ -2,7 +2,7 @@ import numpy as np
 from unittest.mock import patch, MagicMock
 from pathlib import Path
 
-from claude_talk.tts import KokoroTTS, setup_models, MODEL_PATH, VOICES_PATH
+from claude_talk.tts import KokoroTTS, setup_models, download_models, MODEL_PATH, VOICES_PATH
 
 
 def test_kokoro_tts_init():
@@ -51,15 +51,31 @@ def test_setup_models_verifies_files_exist(tmp_path):
                 setup_models()
 
 
-def test_setup_models_raises_if_model_missing(tmp_path):
-    missing_model = tmp_path / "missing.onnx"
-    voices_file = tmp_path / "voices-v1.0.bin"
-    voices_file.write_text("fake")
+def test_download_models_calls_curl_when_missing(tmp_path):
+    """Test that download_models calls curl when models are missing."""
+    missing_model = tmp_path / "models" / "kokoro-v1.0.onnx"
+    missing_voices = tmp_path / "models" / "voices-v1.0.bin"
+    models_dir = tmp_path / "models"
 
     with patch("claude_talk.tts.MODEL_PATH", missing_model):
+        with patch("claude_talk.tts.VOICES_PATH", missing_voices):
+            with patch("claude_talk.tts.MODELS_DIR", models_dir):
+                with patch("claude_talk.tts.subprocess.run") as mock_run:
+                    download_models()
+                    # Should call curl twice (model and voices)
+                    assert mock_run.call_count == 2
+
+
+def test_download_models_skips_if_exists(tmp_path):
+    """Test that download_models skips download if models exist."""
+    model_file = tmp_path / "kokoro-v1.0.onnx"
+    voices_file = tmp_path / "voices-v1.0.bin"
+    model_file.write_text("fake model")
+    voices_file.write_text("fake voices")
+
+    with patch("claude_talk.tts.MODEL_PATH", model_file):
         with patch("claude_talk.tts.VOICES_PATH", voices_file):
-            try:
-                setup_models()
-                assert False, "Should have raised FileNotFoundError"
-            except FileNotFoundError as e:
-                assert "Model not found" in str(e)
+            with patch("claude_talk.tts.subprocess.run") as mock_run:
+                download_models()
+                # Should not call curl if files exist
+                mock_run.assert_not_called()

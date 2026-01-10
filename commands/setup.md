@@ -4,9 +4,15 @@ description: Set up Claude Talk TTS - download models, choose voice, install hoo
 
 # Claude Talk Setup
 
-Guide the user through setting up Claude Talk TTS interactively.
+Run the complete setup for Claude Talk TTS. This will install dependencies, download models, let the user choose a voice, and configure the hooks.
 
-## Step 1: Download Models
+## Step 1: Install Dependencies
+
+```bash
+cd /Users/pv/git/claude-talk && uv sync
+```
+
+## Step 2: Download Models
 
 Download the Kokoro ONNX models (~340MB total):
 
@@ -22,7 +28,7 @@ Verify the models downloaded:
 ls -la /Users/pv/git/claude-talk/models/
 ```
 
-## Step 2: Voice Selection
+## Step 3: Voice Selection
 
 Play voice samples for the user to choose from. For each voice, run the command and let them hear it:
 
@@ -37,29 +43,7 @@ tts.speak('Why do programmers prefer dark mode? Because light attracts bugs.', v
 "
 ```
 
-**Voice 2 - Bella (Female, Expressive):**
-```bash
-uv run --directory /Users/pv/git/claude-talk python -c "
-import sys
-sys.path.insert(0, 'src')
-from claude_talk.tts import KokoroTTS
-tts = KokoroTTS()
-tts.speak('There are only 10 kinds of people. Those who understand binary, and those who dont.', voice='af_bella')
-"
-```
-
-**Voice 3 - Nicole (Female, Clear):**
-```bash
-uv run --directory /Users/pv/git/claude-talk python -c "
-import sys
-sys.path.insert(0, 'src')
-from claude_talk.tts import KokoroTTS
-tts = KokoroTTS()
-tts.speak('A SQL query walks into a bar, sees two tables, and asks... can I join you?', voice='af_nicole')
-"
-```
-
-**Voice 4 - Michael (Male, Professional):**
+**Voice 2 - Michael (Male, Professional):**
 ```bash
 uv run --directory /Users/pv/git/claude-talk python -c "
 import sys
@@ -70,11 +54,33 @@ tts.speak('Why do Java developers wear glasses? Because they cant C sharp.', voi
 "
 ```
 
+**Voice 3 - Bella (Female, Expressive):**
+```bash
+uv run --directory /Users/pv/git/claude-talk python -c "
+import sys
+sys.path.insert(0, 'src')
+from claude_talk.tts import KokoroTTS
+tts = KokoroTTS()
+tts.speak('There are only 10 kinds of people. Those who understand binary, and those who dont.', voice='af_bella')
+"
+```
+
+**Voice 4 - Fenrir (Male, Deep):**
+```bash
+uv run --directory /Users/pv/git/claude-talk python -c "
+import sys
+sys.path.insert(0, 'src')
+from claude_talk.tts import KokoroTTS
+tts = KokoroTTS()
+tts.speak('A SQL query walks into a bar, sees two tables, and asks... can I join you?', voice='am_fenrir')
+"
+```
+
 Ask which voice they prefer after playing the samples.
 
-## Step 3: Save Configuration
+## Step 4: Save Configuration
 
-Once they choose a voice, save the config:
+Once they choose a voice, save the config (replace VOICE_ID with the chosen voice, e.g., 'af_heart'):
 
 ```bash
 uv run --directory /Users/pv/git/claude-talk python -c "
@@ -83,7 +89,7 @@ sys.path.insert(0, 'src')
 from claude_talk.config import Config, save_config
 config = Config(
     enabled=True,
-    voice='VOICE_ID',  # e.g., 'af_heart'
+    voice='VOICE_ID',
     max_chars=500
 )
 save_config(config)
@@ -91,9 +97,9 @@ print('Configuration saved!')
 "
 ```
 
-## Step 4: Install Hook
+## Step 5: Install Hook
 
-Install the AssistantResponse hook:
+Install the Claude Code hooks:
 
 ```bash
 uv run --directory /Users/pv/git/claude-talk python -c "
@@ -105,7 +111,7 @@ print('Hook installed!')
 "
 ```
 
-## Step 5: Done!
+## Done!
 
 Tell the user setup is complete and remind them of the commands:
 - `/claude-talk:disable` - Turn off speech

@@ -1,12 +1,13 @@
 """Setup flow for Claude Talk."""
 
 import json
+import subprocess
 import sys
 from pathlib import Path
 
 from claude_talk.config import Config, save_config, DEFAULT_CONFIG_PATH
 from claude_talk.voices import list_voices
-from claude_talk.tts import setup_models, KokoroTTS
+from claude_talk.tts import setup_models, KokoroTTS, PLUGIN_ROOT
 
 
 CLAUDE_SETTINGS_PATH = Path.home() / ".claude" / "settings.json"
@@ -62,16 +63,26 @@ def run_setup() -> None:
     print("=" * 40)
     print()
 
-    # Step 1: Download models
-    print("Step 1: Downloading Kokoro TTS models...")
+    # Step 1: Install dependencies
+    print("Step 1: Installing dependencies...")
+    subprocess.run(
+        ["uv", "sync"],
+        cwd=PLUGIN_ROOT,
+        check=True
+    )
+    print("Dependencies installed!")
+    print()
+
+    # Step 2: Download models
+    print("Step 2: Downloading Kokoro TTS models...")
     print("(This may take a moment on first run)")
     print()
     setup_models()
     print("Models ready!")
     print()
 
-    # Step 2: Voice selection
-    print("Step 2: Choose your voice")
+    # Step 3: Voice selection
+    print("Step 3: Choose your voice")
     print("Listen to each sample and pick your favorite.")
     print()
 
@@ -92,9 +103,9 @@ def run_setup() -> None:
 
     selected_voice_id = voices[int(choice) - 1][0]
 
-    # Step 3: Save config
+    # Step 4: Save config
     print()
-    print("Step 3: Saving configuration...")
+    print("Step 4: Saving configuration...")
     config = Config(
         enabled=True,
         voice=selected_voice_id,
@@ -103,9 +114,9 @@ def run_setup() -> None:
     save_config(config, DEFAULT_CONFIG_PATH)
     print(f"Config saved to {DEFAULT_CONFIG_PATH}")
 
-    # Step 4: Install hook
+    # Step 5: Install hook
     print()
-    print("Step 4: Installing Claude Code hook...")
+    print("Step 5: Installing Claude Code hook...")
     install_hook()
     print(f"Hook installed in {CLAUDE_SETTINGS_PATH}")
 
