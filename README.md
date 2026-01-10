@@ -13,6 +13,30 @@ TTS plugin for Claude Code that speaks Claude's responses aloud using [Kokoro](h
 
 ## Installation
 
+### Via Marketplace (Recommended)
+
+In Claude Code, register the marketplace:
+
+```
+/plugin marketplace add primary-vector/claude-talk-marketplace
+```
+
+Then install the plugin:
+
+```
+/plugin install claude-talk@claude-talk-marketplace
+```
+
+Run setup:
+
+```
+/claude-talk:setup
+```
+
+Restart Claude Code.
+
+### Manual Installation
+
 1. Clone this repo:
    ```bash
    git clone https://github.com/primary-vector/claude-talk.git
