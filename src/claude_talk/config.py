@@ -16,8 +16,7 @@ class Config:
     """Claude Talk configuration."""
 
     enabled: bool = True
-    voice: str = "v2/en_speaker_6"
-    model_size: str = "small"
+    voice: str = "af_heart"
     max_chars: int = 500
 
 
@@ -31,8 +30,7 @@ def load_config(path: Path = DEFAULT_CONFIG_PATH) -> Config:
 
     return Config(
         enabled=data.get("enabled", True),
-        voice=data.get("voice", "v2/en_speaker_6"),
-        model_size=data.get("model_size", "small"),
+        voice=data.get("voice", "af_heart"),
         max_chars=data.get("max_chars", 500),
     )
 
@@ -43,7 +41,6 @@ def save_config(config: Config, path: Path = DEFAULT_CONFIG_PATH) -> None:
 
     content = f'''enabled = {str(config.enabled).lower()}
 voice = "{config.voice}"
-model_size = "{config.model_size}"
 max_chars = {config.max_chars}
 '''
     path.write_text(content)

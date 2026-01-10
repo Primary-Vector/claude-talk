@@ -1,36 +1,62 @@
-"""Bark TTS wrapper for Claude Talk."""
+"""Kokoro ONNX TTS wrapper for Claude Talk."""
 
-import os
-import numpy as np
+from pathlib import Path
 import sounddevice as sd
+from kokoro_onnx import Kokoro
 
-from bark import SAMPLE_RATE, generate_audio, preload_models
+# Models directory relative to plugin root
+PLUGIN_ROOT = Path(__file__).parent.parent.parent
+MODELS_DIR = PLUGIN_ROOT / "models"
+MODEL_PATH = MODELS_DIR / "kokoro-v1.0.onnx"
+VOICES_PATH = MODELS_DIR / "voices-v1.0.bin"
 
-
-def setup_models(model_size: str = "small") -> None:
-    """Download and load Bark models."""
-    if model_size == "small":
-        os.environ["SUNO_USE_SMALL_MODELS"] = "True"
-    else:
-        os.environ.pop("SUNO_USE_SMALL_MODELS", None)
-
-    preload_models()
+SAMPLE_RATE = 24000
 
 
-class BarkTTS:
-    """Bark TTS synthesizer."""
+class KokoroTTS:
+    """Kokoro ONNX TTS synthesizer."""
 
-    def __init__(self, model_size: str = "small"):
-        self.model_size = model_size
-        setup_models(model_size)
+    def __init__(self):
+        """Initialize Kokoro TTS."""
+        self._kokoro = None
 
-    def synthesize(self, text: str, voice: str = "v2/en_speaker_6") -> np.ndarray:
+    @property
+    def kokoro(self) -> Kokoro:
+        """Lazy-load the Kokoro model."""
+        if self._kokoro is None:
+            self._kokoro = Kokoro(str(MODEL_PATH), str(VOICES_PATH))
+        return self._kokoro
+
+    def synthesize(self, text: str, voice: str = "af_heart") -> tuple:
         """Synthesize text to audio array."""
-        audio = generate_audio(text, history_prompt=voice)
-        return audio
+        samples, sample_rate = self.kokoro.create(
+            text,
+            voice=voice,
+            speed=1.0,
+            lang="en-us"
+        )
+        return samples, sample_rate
 
-    def speak(self, text: str, voice: str = "v2/en_speaker_6") -> None:
+    def speak(self, text: str, voice: str = "af_heart") -> None:
         """Synthesize and play audio."""
-        audio = self.synthesize(text, voice)
-        sd.play(audio, samplerate=SAMPLE_RATE)
+        samples, sample_rate = self.synthesize(text, voice)
+        sd.play(samples, samplerate=sample_rate)
         sd.wait()
+
+
+def setup_models() -> None:
+    """Verify models are downloaded."""
+    if not MODEL_PATH.exists():
+        raise FileNotFoundError(
+            f"Model not found at {MODEL_PATH}. "
+            "Run /claude-talk:setup to download models."
+        )
+    if not VOICES_PATH.exists():
+        raise FileNotFoundError(
+            f"Voices file not found at {VOICES_PATH}. "
+            "Run /claude-talk:setup to download models."
+        )
+    # Quick test to verify models load
+    kokoro = Kokoro(str(MODEL_PATH), str(VOICES_PATH))
+    # Generate tiny sample to verify
+    kokoro.create("test", voice="af_heart", speed=1.0, lang="en-us")

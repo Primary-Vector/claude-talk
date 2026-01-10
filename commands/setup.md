@@ -6,80 +6,73 @@ description: Set up Claude Talk TTS - download models, choose voice, install hoo
 
 Guide the user through setting up Claude Talk TTS interactively.
 
-## Step 1: Choose Model Size
+## Step 1: Download Models
 
-Ask the user which model size they want:
-- **Small** (faster, ~2-4GB VRAM) - Good for quick responses
-- **Large** (better quality, ~8-12GB VRAM) - More natural sounding
-
-## Step 2: Download Models
-
-Once they choose, download the Bark models by running:
+Download the Kokoro ONNX models (~340MB total):
 
 ```bash
-uv run --directory /Users/pv/git/claude-talk python -c "
-import sys
-sys.path.insert(0, 'src')
-from claude_talk.tts import setup_models
-print('Downloading models... this may take a few minutes.')
-setup_models('MODEL_SIZE')  # Replace with 'small' or 'large'
-print('Models downloaded!')
-"
+mkdir -p /Users/pv/git/claude-talk/models
+curl -L -o /Users/pv/git/claude-talk/models/kokoro-v1.0.onnx https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx
+curl -L -o /Users/pv/git/claude-talk/models/voices-v1.0.bin https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin
 ```
 
-Replace `MODEL_SIZE` with their choice.
+Verify the models downloaded:
 
-## Step 3: Voice Selection
+```bash
+ls -la /Users/pv/git/claude-talk/models/
+```
+
+## Step 2: Voice Selection
 
 Play voice samples for the user to choose from. For each voice, run the command and let them hear it:
 
-**Voice 1 - Speaker 6 (Neutral):**
+**Voice 1 - Heart (Female, Warm):**
 ```bash
 uv run --directory /Users/pv/git/claude-talk python -c "
 import sys
 sys.path.insert(0, 'src')
-from claude_talk.tts import BarkTTS
-tts = BarkTTS(model_size='MODEL_SIZE')
-tts.speak('Why do programmers prefer dark mode? Because light attracts bugs.', voice='v2/en_speaker_6')
+from claude_talk.tts import KokoroTTS
+tts = KokoroTTS()
+tts.speak('Why do programmers prefer dark mode? Because light attracts bugs.', voice='af_heart')
 "
 ```
 
-**Voice 2 - Speaker 3 (Warm):**
+**Voice 2 - Bella (Female, Expressive):**
 ```bash
 uv run --directory /Users/pv/git/claude-talk python -c "
 import sys
 sys.path.insert(0, 'src')
-from claude_talk.tts import BarkTTS
-tts = BarkTTS(model_size='MODEL_SIZE')
-tts.speak('There are only 10 kinds of people. Those who understand binary, and those who dont.', voice='v2/en_speaker_3')
+from claude_talk.tts import KokoroTTS
+tts = KokoroTTS()
+tts.speak('There are only 10 kinds of people. Those who understand binary, and those who dont.', voice='af_bella')
 "
 ```
 
-**Voice 3 - Speaker 9 (Clear):**
+**Voice 3 - Nicole (Female, Clear):**
 ```bash
 uv run --directory /Users/pv/git/claude-talk python -c "
 import sys
 sys.path.insert(0, 'src')
-from claude_talk.tts import BarkTTS
-tts = BarkTTS(model_size='MODEL_SIZE')
-tts.speak('A SQL query walks into a bar, sees two tables, and asks... can I join you?', voice='v2/en_speaker_9')
+from claude_talk.tts import KokoroTTS
+tts = KokoroTTS()
+tts.speak('A SQL query walks into a bar, sees two tables, and asks... can I join you?', voice='af_nicole')
 "
 ```
 
-**Voice 4 - Speaker 0 (Calm):**
+**Voice 4 - Michael (Male, Professional):**
 ```bash
 uv run --directory /Users/pv/git/claude-talk python -c "
 import sys
 sys.path.insert(0, 'src')
-from claude_talk.tts import BarkTTS
-tts = BarkTTS(model_size='MODEL_SIZE')
-tts.speak('Why do Java developers wear glasses? Because they cant C sharp.', voice='v2/en_speaker_0')
+from claude_talk.tts import KokoroTTS
+tts = KokoroTTS()
+tts.speak('Why do Java developers wear glasses? Because they cant C sharp.', voice='am_michael')
 "
 ```
 
 Ask which voice they prefer after playing the samples.
 
-## Step 4: Save Configuration
+## Step 3: Save Configuration
 
 Once they choose a voice, save the config:
 
@@ -90,8 +83,7 @@ sys.path.insert(0, 'src')
 from claude_talk.config import Config, save_config
 config = Config(
     enabled=True,
-    voice='VOICE_ID',  # e.g., 'v2/en_speaker_6'
-    model_size='MODEL_SIZE',
+    voice='VOICE_ID',  # e.g., 'af_heart'
     max_chars=500
 )
 save_config(config)
@@ -99,7 +91,7 @@ print('Configuration saved!')
 "
 ```
 
-## Step 5: Install Hook
+## Step 4: Install Hook
 
 Install the AssistantResponse hook:
 
@@ -113,7 +105,7 @@ print('Hook installed!')
 "
 ```
 
-## Step 6: Done!
+## Step 5: Done!
 
 Tell the user setup is complete and remind them of the commands:
 - `/claude-talk:disable` - Turn off speech

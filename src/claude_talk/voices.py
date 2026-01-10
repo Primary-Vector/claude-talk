@@ -1,20 +1,21 @@
 """Voice presets and sample jokes for Claude Talk."""
 
+# Ordered: Female, Male, Female, Male
 VOICES = {
-    "v2/en_speaker_6": {
-        "name": "Speaker 6 (Neutral)",
+    "af_heart": {
+        "name": "Heart (Female, Warm)",
         "joke": "Why do programmers prefer dark mode? Because light attracts bugs.",
     },
-    "v2/en_speaker_3": {
-        "name": "Speaker 3 (Warm)",
+    "am_michael": {
+        "name": "Michael (Male, Professional)",
         "joke": "There are only 10 kinds of people. Those who understand binary, and those who don't.",
     },
-    "v2/en_speaker_9": {
-        "name": "Speaker 9 (Clear)",
+    "af_bella": {
+        "name": "Bella (Female, Expressive)",
         "joke": "A SQL query walks into a bar, sees two tables, and asks... can I join you?",
     },
-    "v2/en_speaker_0": {
-        "name": "Speaker 0 (Calm)",
+    "am_fenrir": {
+        "name": "Fenrir (Male, Deep)",
         "joke": "Why do Java developers wear glasses? Because they can't C sharp.",
     },
 }

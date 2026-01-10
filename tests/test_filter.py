@@ -16,11 +16,11 @@ That should work."""
     assert "That should work." in result
 
 
-def test_removes_inline_code():
+def test_removes_inline_code_backticks():
     text = "Use the `print()` function to output text."
     result = filter_text(text)
-    assert "`print()`" not in result
-    assert "print()" not in result
+    assert "`" not in result  # Backticks removed
+    assert "print()" in result  # Content kept
     assert "Use the" in result
 
 

@@ -6,7 +6,7 @@ from pathlib import Path
 
 from claude_talk.config import Config, save_config, DEFAULT_CONFIG_PATH
 from claude_talk.voices import list_voices
-from claude_talk.tts import setup_models, BarkTTS
+from claude_talk.tts import setup_models, KokoroTTS
 
 
 CLAUDE_SETTINGS_PATH = Path.home() / ".claude" / "settings.json"
@@ -28,12 +28,29 @@ def install_hook(settings_path: Path = CLAUDE_SETTINGS_PATH, plugin_root: Path =
     run_script = plugin_root / "run.py"
     command = f"{sys.executable} {run_script} speak"
 
-    settings["hooks"]["AssistantResponse"] = [
-        {
-            "type": "command",
-            "command": command
-        }
-    ]
+    # Helper to add hook if not already present
+    def add_hook_if_missing(hook_name: str) -> None:
+        if hook_name not in settings["hooks"]:
+            settings["hooks"][hook_name] = []
+
+        hook_exists = any(
+            any(h.get("command", "").endswith("run.py speak") for h in entry.get("hooks", []))
+            for entry in settings["hooks"][hook_name]
+        )
+
+        if not hook_exists:
+            settings["hooks"][hook_name].append({
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": command
+                    }
+                ]
+            })
+
+    # Add hooks for assistant responses
+    add_hook_if_missing("PreToolUse")        # Speak intro before tools
+    add_hook_if_missing("Stop")              # Speak final response
 
     settings_path.parent.mkdir(parents=True, exist_ok=True)
     settings_path.write_text(json.dumps(settings, indent=2))
@@ -45,35 +62,20 @@ def run_setup() -> None:
     print("=" * 40)
     print()
 
-    # Step 1: Choose model size
-    print("Step 1: Choose model size")
-    print("  1. Small (faster, ~2-4GB VRAM)")
-    print("  2. Large (better quality, ~8-12GB VRAM)")
+    # Step 1: Download models
+    print("Step 1: Downloading Kokoro TTS models...")
+    print("(This may take a moment on first run)")
+    print()
+    setup_models()
+    print("Models ready!")
     print()
 
-    while True:
-        choice = input("Enter choice (1 or 2): ").strip()
-        if choice in ("1", "2"):
-            break
-        print("Please enter 1 or 2.")
-
-    model_size = "small" if choice == "1" else "large"
-
-    # Step 2: Download models
-    print()
-    print(f"Step 2: Downloading {model_size} models...")
-    print("(This may take a few minutes)")
-    print()
-    setup_models(model_size)
-    print("Models downloaded!")
-    print()
-
-    # Step 3: Voice selection
-    print("Step 3: Choose your voice")
+    # Step 2: Voice selection
+    print("Step 2: Choose your voice")
     print("Listen to each sample and pick your favorite.")
     print()
 
-    tts = BarkTTS(model_size=model_size)
+    tts = KokoroTTS()
     voices = list_voices()
 
     for i, (voice_id, voice_info) in enumerate(voices, 1):
@@ -90,21 +92,20 @@ def run_setup() -> None:
 
     selected_voice_id = voices[int(choice) - 1][0]
 
-    # Step 4: Save config
+    # Step 3: Save config
     print()
-    print("Step 4: Saving configuration...")
+    print("Step 3: Saving configuration...")
     config = Config(
         enabled=True,
         voice=selected_voice_id,
-        model_size=model_size,
         max_chars=500,
     )
     save_config(config, DEFAULT_CONFIG_PATH)
     print(f"Config saved to {DEFAULT_CONFIG_PATH}")
 
-    # Step 5: Install hook
+    # Step 4: Install hook
     print()
-    print("Step 5: Installing Claude Code hook...")
+    print("Step 4: Installing Claude Code hook...")
     install_hook()
     print(f"Hook installed in {CLAUDE_SETTINGS_PATH}")
 
