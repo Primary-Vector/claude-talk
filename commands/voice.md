@@ -9,9 +9,9 @@ Guide the user through changing their Claude Talk voice interactively.
 First, check their current config:
 
 ```bash
-uv run --directory /Users/pv/git/claude-talk python -c "
+python3 -c "
 import sys
-sys.path.insert(0, 'src')
+sys.path.insert(0, '/Users/pv/git/claude-talk/src')
 from claude_talk.config import load_config
 config = load_config()
 print(f'Current voice: {config.voice}')
@@ -38,9 +38,9 @@ Present the list of available voices. **Do not play samples upfront** - only pla
 Ask the user which voice they'd like to hear. When they pick one, play the sample:
 
 ```bash
-uv run --directory /Users/pv/git/claude-talk python -c "
+python3 -c "
 import sys
-sys.path.insert(0, 'src')
+sys.path.insert(0, '/Users/pv/git/claude-talk/src')
 from claude_talk.tts import KokoroTTS
 from claude_talk.voices import VOICES
 tts = KokoroTTS()
@@ -57,9 +57,9 @@ After playing the sample, ask: "Would you like to use this voice, or pick anothe
 Save their choice:
 
 ```bash
-uv run --directory /Users/pv/git/claude-talk python -c "
+python3 -c "
 import sys
-sys.path.insert(0, 'src')
+sys.path.insert(0, '/Users/pv/git/claude-talk/src')
 from claude_talk.config import load_config, save_config
 config = load_config()
 config.voice = 'VOICE_ID'  # Replace with chosen voice

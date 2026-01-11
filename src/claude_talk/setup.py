@@ -65,9 +65,9 @@ def run_setup() -> None:
 
     # Step 1: Install dependencies
     print("Step 1: Installing dependencies...")
+    requirements_file = PLUGIN_ROOT / "requirements.txt"
     subprocess.run(
-        ["uv", "sync"],
-        cwd=PLUGIN_ROOT,
+        [sys.executable, "-m", "pip", "install", "-q", "-r", str(requirements_file)],
         check=True
     )
     print("Dependencies installed!")

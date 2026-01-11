@@ -9,7 +9,7 @@ Run the complete setup for Claude Talk TTS. This will install dependencies, down
 ## Step 1: Install Dependencies
 
 ```bash
-cd /Users/pv/git/claude-talk && uv sync
+python3 -m pip install -q -r /Users/pv/git/claude-talk/requirements.txt
 ```
 
 ## Step 2: Download Models
@@ -50,9 +50,9 @@ Present the list of available voices to the user. **Do not play samples upfront*
 Ask the user which voice they'd like to hear. When they pick one, play the sample:
 
 ```bash
-uv run --directory /Users/pv/git/claude-talk python -c "
+python3 -c "
 import sys
-sys.path.insert(0, 'src')
+sys.path.insert(0, '/Users/pv/git/claude-talk/src')
 from claude_talk.tts import KokoroTTS
 from claude_talk.voices import VOICES
 tts = KokoroTTS()
@@ -71,9 +71,9 @@ After playing the sample, ask: "Would you like to use this voice, or pick anothe
 Once they choose a voice, save the config (replace VOICE_ID with the chosen voice, e.g., 'af_heart'):
 
 ```bash
-uv run --directory /Users/pv/git/claude-talk python -c "
+python3 -c "
 import sys
-sys.path.insert(0, 'src')
+sys.path.insert(0, '/Users/pv/git/claude-talk/src')
 from claude_talk.config import Config, save_config
 config = Config(
     enabled=True,
@@ -90,9 +90,9 @@ print('Configuration saved!')
 Install the Claude Code hooks:
 
 ```bash
-uv run --directory /Users/pv/git/claude-talk python -c "
+python3 -c "
 import sys
-sys.path.insert(0, 'src')
+sys.path.insert(0, '/Users/pv/git/claude-talk/src')
 from claude_talk.setup import install_hook
 install_hook()
 print('Hook installed!')

@@ -18,7 +18,7 @@ TTS plugin for Claude Code that speaks Claude's responses aloud using [Kokoro](h
 In Claude Code, register the marketplace:
 
 ```
-/plugin marketplace add primary-vector/claude-talk-marketplace
+/plugin marketplace add primary-vector/claude-marketplace
 ```
 
 Then install the plugin:
@@ -108,7 +108,6 @@ The TTS runs in a background subprocess so it doesn't block Claude. New messages
 ## Requirements
 
 - Python 3.11+
-- [uv](https://docs.astral.sh/uv/) package manager
 - macOS (uses ONNX runtime, works great on Apple Silicon)
 - espeak-ng: `brew install espeak-ng`
 
