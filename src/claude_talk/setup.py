@@ -83,25 +83,44 @@ def run_setup() -> None:
 
     # Step 3: Voice selection
     print("Step 3: Choose your voice")
-    print("Listen to each sample and pick your favorite.")
     print()
 
     tts = KokoroTTS()
     voices = list_voices()
 
-    for i, (voice_id, voice_info) in enumerate(voices, 1):
-        print(f"  {i}. {voice_info['name']}")
-        print(f"     Playing sample...")
+    selected_voice_id = None
+    while selected_voice_id is None:
+        # Show all voices
+        print("Available voices:")
+        print()
+        for i, (voice_id, voice_info) in enumerate(voices, 1):
+            print(f"  {i}. {voice_info['name']}")
+        print()
+
+        # Get user choice
+        while True:
+            choice = input(f"Enter choice (1-{len(voices)}): ").strip()
+            if choice.isdigit() and 1 <= int(choice) <= len(voices):
+                break
+            print(f"Please enter a number between 1 and {len(voices)}.")
+
+        choice_idx = int(choice) - 1
+        voice_id, voice_info = voices[choice_idx]
+
+        # Play sample
+        print()
+        print(f"Playing sample for {voice_info['name']}...")
         tts.speak(voice_info["joke"], voice=voice_id)
         print()
 
-    while True:
-        choice = input(f"Enter choice (1-{len(voices)}): ").strip()
-        if choice.isdigit() and 1 <= int(choice) <= len(voices):
-            break
-        print(f"Please enter a number between 1 and {len(voices)}.")
-
-    selected_voice_id = voices[int(choice) - 1][0]
+        # Confirm or pick another
+        confirm = input("Use this voice? (y/n): ").strip().lower()
+        if confirm in ("y", "yes"):
+            selected_voice_id = voice_id
+        else:
+            print()
+            print("Let's pick another voice.")
+            print()
 
     # Step 4: Save config
     print()
@@ -126,7 +145,7 @@ def run_setup() -> None:
     print("Setup complete! Claude will now speak responses aloud.")
     print()
     print("Quick commands:")
-    print("  /claude-talk:disable  - Turn off speech")
-    print("  /claude-talk:enable   - Turn on speech")
-    print("  /claude-talk:voice    - Change voice")
+    print("  /talk:disable  - Turn off speech")
+    print("  /talk:enable   - Turn on speech")
+    print("  /talk:voice    - Change voice")
     print()

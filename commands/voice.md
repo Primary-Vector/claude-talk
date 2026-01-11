@@ -18,53 +18,43 @@ print(f'Current voice: {config.voice}')
 "
 ```
 
-Then play each voice sample:
+Present the list of available voices. **Do not play samples upfront** - only play when they pick one.
 
-**Voice 1 - Heart (Female, Warm):**
+**Available voices:**
+
+| # | Voice ID | Description |
+|---|----------|-------------|
+| 1 | af_heart | Heart (American Female, Warm) |
+| 2 | af_bella | Bella (American Female, Expressive) |
+| 3 | af_nicole | Nicole (American Female, Clear) |
+| 4 | af_sky | Sky (American Female, Bright) |
+| 5 | am_michael | Michael (American Male, Professional) |
+| 6 | am_adam | Adam (American Male, Friendly) |
+| 7 | bf_emma | Emma (British Female, Elegant) |
+| 8 | bf_isabella | Isabella (British Female, Refined) |
+| 9 | bm_george | George (British Male, Distinguished) |
+| 10 | bm_lewis | Lewis (British Male, Thoughtful) |
+
+Ask the user which voice they'd like to hear. When they pick one, play the sample:
+
 ```bash
 uv run --directory /Users/pv/git/claude-talk python -c "
 import sys
 sys.path.insert(0, 'src')
 from claude_talk.tts import KokoroTTS
+from claude_talk.voices import VOICES
 tts = KokoroTTS()
-tts.speak('Why do programmers prefer dark mode? Because light attracts bugs.', voice='af_heart')
+voice_id = 'VOICE_ID'  # Replace with chosen voice
+tts.speak(VOICES[voice_id]['joke'], voice=voice_id)
 "
 ```
 
-**Voice 2 - Bella (Female, Expressive):**
-```bash
-uv run --directory /Users/pv/git/claude-talk python -c "
-import sys
-sys.path.insert(0, 'src')
-from claude_talk.tts import KokoroTTS
-tts = KokoroTTS()
-tts.speak('There are only 10 kinds of people. Those who understand binary, and those who dont.', voice='af_bella')
-"
-```
+After playing the sample, ask: "Would you like to use this voice, or pick another?"
 
-**Voice 3 - Nicole (Female, Clear):**
-```bash
-uv run --directory /Users/pv/git/claude-talk python -c "
-import sys
-sys.path.insert(0, 'src')
-from claude_talk.tts import KokoroTTS
-tts = KokoroTTS()
-tts.speak('A SQL query walks into a bar, sees two tables, and asks... can I join you?', voice='af_nicole')
-"
-```
+- If they confirm, save the config and confirm the change
+- If they want another, show the list again and repeat
 
-**Voice 4 - Michael (Male, Professional):**
-```bash
-uv run --directory /Users/pv/git/claude-talk python -c "
-import sys
-sys.path.insert(0, 'src')
-from claude_talk.tts import KokoroTTS
-tts = KokoroTTS()
-tts.speak('Why do Java developers wear glasses? Because they cant C sharp.', voice='am_michael')
-"
-```
-
-After playing samples, ask which voice they prefer, then save their choice:
+Save their choice:
 
 ```bash
 uv run --directory /Users/pv/git/claude-talk python -c "

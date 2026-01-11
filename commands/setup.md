@@ -30,53 +30,41 @@ ls -la /Users/pv/git/claude-talk/models/
 
 ## Step 3: Voice Selection
 
-Play voice samples for the user to choose from. For each voice, run the command and let them hear it:
+Present the list of available voices to the user. **Do not play samples upfront** - only play when they pick one.
 
-**Voice 1 - Heart (Female, Warm):**
+**Available voices:**
+
+| # | Voice ID | Description |
+|---|----------|-------------|
+| 1 | af_heart | Heart (American Female, Warm) |
+| 2 | af_bella | Bella (American Female, Expressive) |
+| 3 | af_nicole | Nicole (American Female, Clear) |
+| 4 | af_sky | Sky (American Female, Bright) |
+| 5 | am_michael | Michael (American Male, Professional) |
+| 6 | am_adam | Adam (American Male, Friendly) |
+| 7 | bf_emma | Emma (British Female, Elegant) |
+| 8 | bf_isabella | Isabella (British Female, Refined) |
+| 9 | bm_george | George (British Male, Distinguished) |
+| 10 | bm_lewis | Lewis (British Male, Thoughtful) |
+
+Ask the user which voice they'd like to hear. When they pick one, play the sample:
+
 ```bash
 uv run --directory /Users/pv/git/claude-talk python -c "
 import sys
 sys.path.insert(0, 'src')
 from claude_talk.tts import KokoroTTS
+from claude_talk.voices import VOICES
 tts = KokoroTTS()
-tts.speak('Why do programmers prefer dark mode? Because light attracts bugs.', voice='af_heart')
+voice_id = 'VOICE_ID'  # Replace with chosen voice
+tts.speak(VOICES[voice_id]['joke'], voice=voice_id)
 "
 ```
 
-**Voice 2 - Michael (Male, Professional):**
-```bash
-uv run --directory /Users/pv/git/claude-talk python -c "
-import sys
-sys.path.insert(0, 'src')
-from claude_talk.tts import KokoroTTS
-tts = KokoroTTS()
-tts.speak('Why do Java developers wear glasses? Because they cant C sharp.', voice='am_michael')
-"
-```
+After playing the sample, ask: "Would you like to use this voice, or pick another?"
 
-**Voice 3 - Bella (Female, Expressive):**
-```bash
-uv run --directory /Users/pv/git/claude-talk python -c "
-import sys
-sys.path.insert(0, 'src')
-from claude_talk.tts import KokoroTTS
-tts = KokoroTTS()
-tts.speak('There are only 10 kinds of people. Those who understand binary, and those who dont.', voice='af_bella')
-"
-```
-
-**Voice 4 - Fenrir (Male, Deep):**
-```bash
-uv run --directory /Users/pv/git/claude-talk python -c "
-import sys
-sys.path.insert(0, 'src')
-from claude_talk.tts import KokoroTTS
-tts = KokoroTTS()
-tts.speak('A SQL query walks into a bar, sees two tables, and asks... can I join you?', voice='am_fenrir')
-"
-```
-
-Ask which voice they prefer after playing the samples.
+- If they confirm, proceed to Step 4 with that voice
+- If they want another, show the list again and repeat
 
 ## Step 4: Save Configuration
 
@@ -114,8 +102,8 @@ print('Hook installed!')
 ## Done!
 
 Tell the user setup is complete and remind them of the commands:
-- `/claude-talk:disable` - Turn off speech
-- `/claude-talk:enable` - Turn on speech
-- `/claude-talk:voice` - Change voice
+- `/talk:disable` - Turn off speech
+- `/talk:enable` - Turn on speech
+- `/talk:voice` - Change voice
 
 Note: They'll need to restart Claude Code for the hook to take effect.

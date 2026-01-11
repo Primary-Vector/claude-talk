@@ -30,7 +30,7 @@ Then install the plugin:
 Run setup:
 
 ```
-/claude-talk:setup
+/talk:setup
 ```
 
 Restart Claude Code.
@@ -44,7 +44,7 @@ Restart Claude Code.
 
 2. Run setup in Claude Code:
    ```
-   /claude-talk:setup
+   /talk:setup
    ```
 
    This will:
@@ -59,17 +59,26 @@ Restart Claude Code.
 
 Use these as slash commands in Claude Code:
 
-- `/claude-talk:setup` - Interactive setup wizard
-- `/claude-talk:enable` - Enable TTS
-- `/claude-talk:disable` - Disable TTS
-- `/claude-talk:voice` - Change voice
+- `/talk:setup` - Interactive setup wizard
+- `/talk:enable` - Enable TTS
+- `/talk:disable` - Disable TTS
+- `/talk:voice` - Change voice
 
 ## Available Voices
 
+**American:**
 - `af_heart` - Female, warm
-- `am_michael` - Male, professional
 - `af_bella` - Female, expressive
-- `am_fenrir` - Male, deep
+- `af_nicole` - Female, clear
+- `af_sky` - Female, bright
+- `am_michael` - Male, professional
+- `am_adam` - Male, friendly
+
+**British:**
+- `bf_emma` - Female, elegant
+- `bf_isabella` - Female, refined
+- `bm_george` - Male, distinguished
+- `bm_lewis` - Male, thoughtful
 
 ## Configuration
 
