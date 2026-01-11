@@ -24,7 +24,7 @@ In Claude Code, register the marketplace:
 Then install the plugin:
 
 ```
-/plugin install claude-talk@claude-talk-marketplace
+/plugin install talk@primary-vector-marketplace
 ```
 
 Run setup:
