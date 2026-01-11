@@ -206,7 +206,7 @@ def main() -> None:
     """CLI entry point."""
     if len(sys.argv) < 2:
         print("Usage: claude-talk <command>", file=sys.stderr)
-        print("Commands: speak, setup, enable, disable, voice", file=sys.stderr)
+        print("Commands: speak, setup, enable, disable, voice, sample, set-voice, current-voice, install-hook", file=sys.stderr)
         sys.exit(1)
 
     command = sys.argv[1]
@@ -230,6 +230,49 @@ def main() -> None:
         print("Claude Talk disabled.")
     elif command == "voice":
         voice_command()
+    elif command == "sample":
+        # Play a sample for a specific voice
+        if len(sys.argv) < 3:
+            print("Usage: claude-talk sample <voice_id>", file=sys.stderr)
+            sys.exit(1)
+        voice_id = sys.argv[2]
+        from claude_talk.voices import VOICES
+        if voice_id not in VOICES:
+            print(f"Unknown voice: {voice_id}", file=sys.stderr)
+            sys.exit(1)
+        tts = KokoroTTS()
+        tts.speak(VOICES[voice_id]["joke"], voice=voice_id)
+    elif command == "set-voice":
+        # Set the voice in config
+        if len(sys.argv) < 3:
+            print("Usage: claude-talk set-voice <voice_id>", file=sys.stderr)
+            sys.exit(1)
+        voice_id = sys.argv[2]
+        from claude_talk.voices import VOICES
+        from claude_talk.config import load_config, save_config, Config
+        if voice_id not in VOICES:
+            print(f"Unknown voice: {voice_id}", file=sys.stderr)
+            sys.exit(1)
+        try:
+            config = load_config()
+        except FileNotFoundError:
+            config = Config(enabled=True, voice=voice_id, max_chars=500)
+        config.voice = voice_id
+        save_config(config)
+        print(f"Voice set to {voice_id}")
+    elif command == "current-voice":
+        # Print current voice
+        from claude_talk.config import load_config
+        try:
+            config = load_config()
+            print(f"Current voice: {config.voice}")
+        except FileNotFoundError:
+            print("No voice configured yet. Run /talk:setup first.")
+    elif command == "install-hook":
+        # Install the Claude Code hooks
+        from claude_talk.setup import install_hook
+        install_hook()
+        print("Hooks installed.")
     else:
         print(f"Unknown command: {command}", file=sys.stderr)
         sys.exit(1)

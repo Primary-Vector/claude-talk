@@ -1,7 +1,7 @@
 {
   "name": "talk",
   "description": "TTS plugin for Claude Code - speaks responses aloud using Kokoro ONNX",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": {
     "name": "Primary Vector"
   },

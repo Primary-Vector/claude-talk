@@ -6,26 +6,32 @@ description: Set up Claude Talk TTS - download models, choose voice, install hoo
 
 Run the complete setup for Claude Talk TTS. This will install dependencies, download models, let the user choose a voice, and configure the hooks.
 
+First, determine the plugin directory by finding where this command file is located. The plugin root is the parent of the `commands` directory.
+
 ## Step 1: Install Dependencies
 
+Install the required Python packages:
+
 ```bash
-python3 -m pip install -q -r /Users/pv/git/claude-talk/requirements.txt
+python3 -m pip install -q kokoro-onnx soundfile sounddevice
 ```
 
 ## Step 2: Download Models
 
-Download the Kokoro ONNX models (~340MB total):
+Download the Kokoro ONNX models (~340MB total) to the plugin's models directory:
 
 ```bash
-mkdir -p /Users/pv/git/claude-talk/models
-curl -L -o /Users/pv/git/claude-talk/models/kokoro-v1.0.onnx https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx
-curl -L -o /Users/pv/git/claude-talk/models/voices-v1.0.bin https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin
+mkdir -p <PLUGIN_ROOT>/models
+curl -L -o <PLUGIN_ROOT>/models/kokoro-v1.0.onnx https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.onnx
+curl -L -o <PLUGIN_ROOT>/models/voices-v1.0.bin https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin
 ```
+
+Replace `<PLUGIN_ROOT>` with the actual plugin directory path.
 
 Verify the models downloaded:
 
 ```bash
-ls -la /Users/pv/git/claude-talk/models/
+ls -la <PLUGIN_ROOT>/models/
 ```
 
 ## Step 3: Voice Selection
@@ -47,19 +53,13 @@ Present the list of available voices to the user. **Do not play samples upfront*
 | 9 | bm_george | George (British Male, Distinguished) |
 | 10 | bm_lewis | Lewis (British Male, Thoughtful) |
 
-Ask the user which voice they'd like to hear. When they pick one, play the sample:
+Ask the user which voice they'd like to hear. When they pick one, play the sample using the plugin's run.py:
 
 ```bash
-python3 -c "
-import sys
-sys.path.insert(0, '/Users/pv/git/claude-talk/src')
-from claude_talk.tts import KokoroTTS
-from claude_talk.voices import VOICES
-tts = KokoroTTS()
-voice_id = 'VOICE_ID'  # Replace with chosen voice
-tts.speak(VOICES[voice_id]['joke'], voice=voice_id)
-"
+python3 <PLUGIN_ROOT>/run.py sample <VOICE_ID>
 ```
+
+Replace `<VOICE_ID>` with the chosen voice (e.g., `af_heart`).
 
 After playing the sample, ask: "Would you like to use this voice, or pick another?"
 
@@ -68,21 +68,10 @@ After playing the sample, ask: "Would you like to use this voice, or pick anothe
 
 ## Step 4: Save Configuration
 
-Once they choose a voice, save the config (replace VOICE_ID with the chosen voice, e.g., 'af_heart'):
+Once they choose a voice, save the config:
 
 ```bash
-python3 -c "
-import sys
-sys.path.insert(0, '/Users/pv/git/claude-talk/src')
-from claude_talk.config import Config, save_config
-config = Config(
-    enabled=True,
-    voice='VOICE_ID',
-    max_chars=500
-)
-save_config(config)
-print('Configuration saved!')
-"
+python3 <PLUGIN_ROOT>/run.py set-voice <VOICE_ID>
 ```
 
 ## Step 5: Install Hook
@@ -90,13 +79,7 @@ print('Configuration saved!')
 Install the Claude Code hooks:
 
 ```bash
-python3 -c "
-import sys
-sys.path.insert(0, '/Users/pv/git/claude-talk/src')
-from claude_talk.setup import install_hook
-install_hook()
-print('Hook installed!')
-"
+python3 <PLUGIN_ROOT>/run.py install-hook
 ```
 
 ## Done!

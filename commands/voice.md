@@ -6,16 +6,12 @@ description: Change Claude Talk voice
 
 Guide the user through changing their Claude Talk voice interactively.
 
-First, check their current config:
+First, determine the plugin directory by finding where this command file is located. The plugin root is the parent of the `commands` directory.
+
+Check their current config:
 
 ```bash
-python3 -c "
-import sys
-sys.path.insert(0, '/Users/pv/git/claude-talk/src')
-from claude_talk.config import load_config
-config = load_config()
-print(f'Current voice: {config.voice}')
-"
+python3 <PLUGIN_ROOT>/run.py current-voice
 ```
 
 Present the list of available voices. **Do not play samples upfront** - only play when they pick one.
@@ -38,34 +34,20 @@ Present the list of available voices. **Do not play samples upfront** - only pla
 Ask the user which voice they'd like to hear. When they pick one, play the sample:
 
 ```bash
-python3 -c "
-import sys
-sys.path.insert(0, '/Users/pv/git/claude-talk/src')
-from claude_talk.tts import KokoroTTS
-from claude_talk.voices import VOICES
-tts = KokoroTTS()
-voice_id = 'VOICE_ID'  # Replace with chosen voice
-tts.speak(VOICES[voice_id]['joke'], voice=voice_id)
-"
+python3 <PLUGIN_ROOT>/run.py sample <VOICE_ID>
 ```
+
+Replace `<VOICE_ID>` with the chosen voice (e.g., `af_heart`).
 
 After playing the sample, ask: "Would you like to use this voice, or pick another?"
 
-- If they confirm, save the config and confirm the change
+- If they confirm, save the config
 - If they want another, show the list again and repeat
 
 Save their choice:
 
 ```bash
-python3 -c "
-import sys
-sys.path.insert(0, '/Users/pv/git/claude-talk/src')
-from claude_talk.config import load_config, save_config
-config = load_config()
-config.voice = 'VOICE_ID'  # Replace with chosen voice
-save_config(config)
-print(f'Voice changed to VOICE_ID')
-"
+python3 <PLUGIN_ROOT>/run.py set-voice <VOICE_ID>
 ```
 
-Replace `VOICE_ID` with their choice (e.g., `af_heart`).
+Replace `<PLUGIN_ROOT>` with the actual plugin directory path.
