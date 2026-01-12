@@ -13,6 +13,8 @@ from claude_talk.tts import KokoroTTS
 # State directory for tracking spoken content and PIDs
 STATE_DIR = Path.home() / ".cache" / "claude-talk"
 PID_FILE = STATE_DIR / "tts.pid"
+LAST_SPEAK_FILE = STATE_DIR / "last_speak.timestamp"
+DEBOUNCE_SECONDS = 0.5  # Ignore speak requests within this window
 
 
 def get_state_file(session_id: str) -> Path:
@@ -33,6 +35,31 @@ def set_spoken_hash(session_id: str, content_hash: str) -> None:
     """Record what we've spoken."""
     state_file = get_state_file(session_id)
     state_file.write_text(content_hash)
+
+
+def should_debounce() -> bool:
+    """Check if we should skip this speak request due to recent activity."""
+    import time
+
+    STATE_DIR.mkdir(parents=True, exist_ok=True)
+
+    if LAST_SPEAK_FILE.exists():
+        try:
+            last_timestamp = float(LAST_SPEAK_FILE.read_text().strip())
+            time_since_last = time.time() - last_timestamp
+            return time_since_last < DEBOUNCE_SECONDS
+        except (ValueError, OSError):
+            pass
+
+    return False
+
+
+def update_speak_timestamp() -> None:
+    """Record the current time as the last speak attempt."""
+    import time
+
+    STATE_DIR.mkdir(parents=True, exist_ok=True)
+    LAST_SPEAK_FILE.write_text(str(time.time()))
 
 
 def get_assistant_text_from_transcript(transcript_path: str) -> str | None:
@@ -92,8 +119,15 @@ def speak_async(text: str, voice: str) -> None:
     """Speak text in a background subprocess (fire and forget)."""
     import subprocess
 
+    # Debounce rapid requests to prevent overlapping playback
+    if should_debounce():
+        return
+
     # Kill any existing playback first
     kill_existing_playback()
+
+    # Update timestamp to prevent rapid subsequent calls
+    update_speak_timestamp()
 
     # Get the path to this module's directory
     module_dir = Path(__file__).parent.parent.parent
