@@ -16,6 +16,10 @@ def filter_text(text: str, max_chars: int = 500) -> str:
     # Remove markdown tables (lines starting with |)
     result = re.sub(r"^\|.*\|$", "", result, flags=re.MULTILINE)
 
+    # Convert periods without surrounding whitespace to " dot " (for filenames, code identifiers)
+    # e.g., "SignupView.swift" -> "SignupView dot swift"
+    result = re.sub(r"(\S)\.(\S)", r"\1 dot \2", result)
+
     # Remove URLs (BEFORE file paths, since URLs contain paths)
     result = re.sub(r"https?://[^\s]+", "", result)
 
