@@ -3,10 +3,7 @@
 from dataclasses import dataclass
 from pathlib import Path
 
-try:
-    import tomllib
-except ImportError:
-    import tomli as tomllib
+import tomllib
 
 DEFAULT_CONFIG_PATH = Path.home() / ".config" / "claude-talk" / "config.toml"
 

@@ -12,15 +12,16 @@ from claude_talk.tts import setup_models, KokoroTTS, PLUGIN_ROOT
 
 CLAUDE_SETTINGS_PATH = Path.home() / ".claude" / "settings.json"
 
-# Plugin root is parent of src/claude_talk/
-PLUGIN_ROOT = Path(__file__).parent.parent.parent
-
 
 def install_hook(settings_path: Path = CLAUDE_SETTINGS_PATH, plugin_root: Path = PLUGIN_ROOT) -> None:
     """Install the AssistantResponse hook in Claude settings."""
     settings = {}
     if settings_path.exists():
-        settings = json.loads(settings_path.read_text())
+        try:
+            settings = json.loads(settings_path.read_text())
+        except json.JSONDecodeError:
+            print(f"Warning: Could not parse {settings_path}, creating new settings")
+            settings = {}
 
     if "hooks" not in settings:
         settings["hooks"] = {}
@@ -66,11 +67,16 @@ def run_setup() -> None:
     # Step 1: Install dependencies
     print("Step 1: Installing dependencies...")
     requirements_file = PLUGIN_ROOT / "requirements.txt"
-    subprocess.run(
-        [sys.executable, "-m", "pip", "install", "-q", "-r", str(requirements_file)],
-        check=True
-    )
-    print("Dependencies installed!")
+    try:
+        subprocess.run(
+            [sys.executable, "-m", "pip", "install", "-q", "-r", str(requirements_file)],
+            check=True
+        )
+        print("Dependencies installed!")
+    except subprocess.CalledProcessError:
+        print("Error: Failed to install dependencies. Please run:")
+        print(f"  pip install -r {requirements_file}")
+        return
     print()
 
     # Step 2: Download models

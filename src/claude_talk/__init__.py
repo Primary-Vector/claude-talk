@@ -1,3 +1,3 @@
-"""Claude Talk - TTS plugin for Claude Code using Bark."""
+"""Claude Talk - TTS plugin for Claude Code using Kokoro ONNX."""
 
-__version__ = "0.1.0"
+__version__ = "1.2.2"
