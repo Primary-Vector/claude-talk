@@ -8,7 +8,21 @@ Run the complete setup for Claude Talk TTS. This will install dependencies, down
 
 First, determine the plugin directory by finding where this command file is located. The plugin root is the parent of the `commands` directory.
 
-## Step 1: Install Dependencies
+## Step 1: Install System Dependencies
+
+Check if espeak-ng is installed (required for phoneme generation):
+
+```bash
+which espeak-ng || echo "NOT_INSTALLED"
+```
+
+If espeak-ng is not installed, install it via Homebrew:
+
+```bash
+brew install espeak-ng
+```
+
+## Step 2: Install Python Dependencies
 
 Install the required Python packages:
 
@@ -16,7 +30,7 @@ Install the required Python packages:
 python3 -m pip install -q kokoro-onnx soundfile sounddevice
 ```
 
-## Step 2: Download Models
+## Step 3: Download Models
 
 Download the Kokoro ONNX models (~340MB total) to the plugin's models directory:
 
@@ -34,7 +48,7 @@ Verify the models downloaded:
 ls -la <PLUGIN_ROOT>/models/
 ```
 
-## Step 3: Voice Selection
+## Step 4: Voice Selection
 
 Present the list of available voices to the user. **Do not play samples upfront** - only play when they pick one.
 
@@ -66,7 +80,7 @@ After playing the sample, ask: "Would you like to use this voice, or pick anothe
 - If they confirm, proceed to Step 4 with that voice
 - If they want another, show the list again and repeat
 
-## Step 4: Save Configuration
+## Step 5: Save Configuration
 
 Once they choose a voice, save the config:
 
@@ -74,7 +88,7 @@ Once they choose a voice, save the config:
 python3 <PLUGIN_ROOT>/run.py set-voice <VOICE_ID>
 ```
 
-## Step 5: Install Hook
+## Step 6: Install Hook
 
 Install the Claude Code hooks:
 

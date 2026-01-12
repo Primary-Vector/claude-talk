@@ -109,7 +109,7 @@ The TTS runs in a background subprocess so it doesn't block Claude. New messages
 
 - Python 3.11+
 - macOS (uses ONNX runtime, works great on Apple Silicon)
-- espeak-ng: `brew install espeak-ng`
+- Homebrew (for installing espeak-ng during setup)
 
 ## License
 
