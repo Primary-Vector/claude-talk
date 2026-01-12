@@ -1,6 +1,6 @@
 [project]
 name = "claude-talk"
-version = "1.2.2"
+version = "1.2.3"
 description = "TTS plugin for Claude Code using Kokoro"
 requires-python = ">=3.11"
 dependencies = [
