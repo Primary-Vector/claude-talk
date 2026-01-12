@@ -223,9 +223,9 @@ And some more text."""
 
 
 def test_removes_file_paths():
-    text = "Check the file at /Users/pv/git/project/src/main.py for details."
+    text = "Check the file at /Users/user/projects/project/src/main.py for details."
     result = filter_text(text)
-    assert "/Users/pv/git" not in result
+    assert "/Users/user/projects" not in result
 
 
 def test_removes_urls():
