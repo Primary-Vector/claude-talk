@@ -206,13 +206,16 @@ def main() -> None:
     """CLI entry point."""
     if len(sys.argv) < 2:
         print("Usage: claude-talk <command>", file=sys.stderr)
-        print("Commands: speak, setup, enable, disable, voice, sample, set-voice, current-voice, install-hook", file=sys.stderr)
+        print("Commands: speak, stop, setup, enable, disable, voice, sample, set-voice, current-voice, install-hook", file=sys.stderr)
         sys.exit(1)
 
     command = sys.argv[1]
 
     if command == "speak":
         speak_command()
+    elif command == "stop":
+        kill_existing_playback()
+        print("Stopped.")
     elif command == "setup":
         from claude_talk.setup import run_setup
         run_setup()
