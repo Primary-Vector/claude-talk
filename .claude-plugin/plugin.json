@@ -1,12 +1,13 @@
 {
   "name": "talk",
   "description": "TTS plugin for Claude Code - speaks responses aloud using Kokoro ONNX",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "author": {
     "name": "Primary Vector"
   },
   "homepage": "https://github.com/Primary-Vector/claude-talk",
   "repository": "https://github.com/Primary-Vector/claude-talk.git",
   "license": "MIT",
-  "keywords": ["tts", "kokoro", "speech", "audio", "accessibility"]
+  "keywords": ["tts", "kokoro", "speech", "audio", "accessibility"],
+  "commands": "./commands/"
 }
